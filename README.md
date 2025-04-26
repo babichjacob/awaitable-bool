@@ -35,6 +35,8 @@ at your option.
 
 ## 🙏 Attribution
 
+@davidspies [identified and corrected](https://github.com/babichjacob/awaitable-bool/pull/2) a race condition in the code and [relaxed some unnecessarily strict atomic ordering](https://github.com/babichjacob/awaitable-bool/pull/1). Thank you!
+
 @devalain's [`future-bool`](https://crates.io/crates/future-bool) is an existing Rust crate that already works very closely to this.
 
 The idea is highly inspired by [Python's `asyncio.Event`](https://docs.python.org/3/library/asyncio-sync.html#asyncio.Event), but an `AwaitableBool` can be waited for to become 'clear' too (not just 'set').
