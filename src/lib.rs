@@ -143,15 +143,17 @@ impl AwaitableBool {
     /// Wait for this [`AwaitableBool`]'s value to become `true`.
     /// This returns immediately if it's already `true`.
     pub async fn wait_true(&self) {
+        let wait_fut = self.wait();
         if self.is_false() {
-            self.wait().await;
+            wait_fut.await;
         }
     }
     /// Wait for this [`AwaitableBool`]'s value to become `false`.
     /// This returns immediately if it's already `false`.
     pub async fn wait_false(&self) {
+        let wait_fut = self.wait();
         if self.is_true() {
-            self.wait().await;
+            wait_fut.await;
         }
     }
 
