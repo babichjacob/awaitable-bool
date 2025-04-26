@@ -47,19 +47,19 @@ impl AwaitableBool {
 
     /// Set the `AwaitableBool` to `true`
     /// (with [`Release`] ordering if not already `true`
-    /// and [`Acquire`] ordering if it is).
+    /// and [`Relaxed`] ordering if it is).
     ///
     /// This wakes all tasks waiting for [`wait_true`].
     /// It also wakes those waiting for [`wait`] if the value wasn't already `true`.
     ///
-    /// [`Acquire`]: core::sync::atomic::Ordering::Acquire
+    /// [`Relaxed`]: core::sync::atomic::Ordering::Relaxed
     /// [`Release`]: core::sync::atomic::Ordering::Release
     /// [`wait`]: AwaitableBool::wait
     /// [`wait_true`]: AwaitableBool::wait_true
     pub fn set_true(&self) {
         if self
             .bool
-            .compare_exchange(false, true, Ordering::Release, Ordering::Acquire)
+            .compare_exchange(false, true, Ordering::Release, Ordering::Relaxed)
             .is_ok()
         {
             self.notify.notify_waiters();
@@ -68,19 +68,19 @@ impl AwaitableBool {
 
     /// Set the `AwaitableBool` to `false`
     /// (with [`Release`] ordering if not already `false`
-    /// and [`Acquire`] ordering if it is).
+    /// and [`Relaxed`] ordering if it is).
     ///
     /// This wakes all tasks waiting for [`wait_false`].
     /// It also wakes those waiting for [`wait`] if the value wasn't already `false`.
     ///
-    /// [`Acquire`]: core::sync::atomic::Ordering::Acquire
+    /// [`Relaxed`]: core::sync::atomic::Ordering::Relaxed
     /// [`Release`]: core::sync::atomic::Ordering::Release
     /// [`wait`]: AwaitableBool::wait
     /// [`wait_false`]: AwaitableBool::wait_false
     pub fn set_false(&self) {
         if self
             .bool
-            .compare_exchange(true, false, Ordering::Release, Ordering::Acquire)
+            .compare_exchange(true, false, Ordering::Release, Ordering::Relaxed)
             .is_ok()
         {
             self.notify.notify_waiters();
@@ -88,19 +88,19 @@ impl AwaitableBool {
     }
 
     /// Set the `AwaitableBool` to the inverse of its current value (i.e. `false` if `true` or `true` if `false`)
-    /// (with [`AcqRel`] ordering).
+    /// (with [`Release`] ordering).
     ///
     /// This wakes all tasks waiting for [`wait`].
     /// It also wakes those waiting for [`wait_true`] if the value was just changed from `false` to `true`,
     /// or those waiting for [`wait_false`] if the value was just changed from `true` to `false`.
     ///
-    /// [`AcqRel`]: core::sync::atomic::Ordering::AcqRel
+    /// [`Release`]: core::sync::atomic::Ordering::Release
     /// [`wait`]: AwaitableBool::wait
     /// [`wait_false`]: AwaitableBool::wait_false
     /// [`wait_true`]: AwaitableBool::wait_true
     pub fn toggle(&self) {
         // Until AtomicBool::fetch_not is stable
-        self.bool.fetch_xor(true, Ordering::AcqRel);
+        self.bool.fetch_xor(true, Ordering::Release);
 
         self.notify.notify_waiters();
     }
