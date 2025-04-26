@@ -31,16 +31,28 @@ impl<T: Into<AtomicBool>> From<T> for AwaitableBool {
 }
 
 impl AwaitableBool {
-    /// Creates a new `AwaitableBool`.
+    /// Creates a new [`AwaitableBool`].
     ///
     /// # Examples
     ///
+    /// ## Specify an initial value
     /// ```
     /// use awaitable_bool::AwaitableBool;
     ///
-    /// let awaitable_true = AwaitableBool::new(true);
-    /// let awaitable_false = AwaitableBool::new(false);
+    /// let initially_true = AwaitableBool::new(true);
+    /// let initially_false = AwaitableBool::new(false);
     /// ```
+    ///
+    /// ## Use an existing [`AtomicBool`] to make an [`AwaitableBool`]
+    /// ```
+    /// use std::sync::atomic::AtomicBool;
+    /// use awaitable_bool::AwaitableBool;
+    ///
+    /// let atomic_bool = AtomicBool::new(false);
+    /// let awaitable_bool = AwaitableBool::new(atomic_bool);
+    /// ```
+    ///
+    /// [`AtomicBool`]: std::sync::atomic::AtomicBool
     pub fn new<IntoAtomicBool: Into<AtomicBool>>(value: IntoAtomicBool) -> Self {
         value.into().into()
     }
